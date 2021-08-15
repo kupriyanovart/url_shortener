@@ -1,0 +1,17 @@
+{% extends 'url_shortener/main.html' %}
+{% block main_section %}
+    <div class="mb-3">
+        <div class="form-floating">
+            <input id="url-original" type="text" class="form-control text-center" value="{{ object.url }}">
+            <label for="url-original">Введеная ссылка</label>
+        </div>
+        <br>
+        <div class="form-floating">
+            <input id="url-short" class="form-control text-center" type="text" value="{{object.get_short_url}}">
+            <label for="url-short">Сокращенная ссылка</label>
+        </div>
+        <br>
+        <a class="btn btn-primary" href="/">Сократить другую ссылку</a>
+    </div>
+
+{% endblock main_section %}

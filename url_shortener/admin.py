@@ -4,7 +4,7 @@ from .models import Urls
 
 
 class UrlsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('url', 'hash_url')
 
 
 admin.site.register(Urls, UrlsAdmin)
