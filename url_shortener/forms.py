@@ -3,8 +3,10 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
 
-# Валидатор для формы UrlForm
 def valid_url(value):
+    """
+    Валидатор для формы UrlForm
+    """
     url_validator = URLValidator()
     try:
         url_validator(value)
@@ -13,9 +15,17 @@ def valid_url(value):
     return value
 
 
-# Форма, используемая для ввода URL для сокращения
 class UrlForm(forms.Form):
-    url = forms.CharField(label='',
-                          validators=[valid_url],
-                          widget=forms.TextInput(attrs={"placeholder": "Введите URL",
-                                                        "class": "form-control"}))
+    """
+    Форма, используемая для ввода URL для сокращения
+    """
+    url = forms.CharField(
+        label="",
+        validators=[valid_url],
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Введите URL",
+                "class": "form-control"
+            }
+        )
+    )

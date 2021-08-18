@@ -14,7 +14,7 @@ class CreateUrlView(View):
             "title": "Сокращатель ссылок 3000",
             "form": form
         }
-        return render(request, 'url_shortener/urls_create.html', context)
+        return render(request, "url_shortener/urls_create.html", context)
 
     def post(self, request, *args, **kwargs):
         form = UrlForm(request.POST)
@@ -23,15 +23,15 @@ class CreateUrlView(View):
             "form": form
         }
         if form.is_valid():
-            current_url = form.cleaned_data.get('url')
+            current_url = form.cleaned_data.get("url")
             obj, created = Urls.objects.get_or_create(url=current_url)
             context = {
-                'title': 'Ссылка сокращена!',
-                'object': obj,
-                'created': created
+                "title": "Ссылка сокращена!",
+                "object": obj,
+                "created": created
             }
-            return render(request, 'url_shortener/urls_success.html', context)
-        return render(request, 'url_shortener/urls_create.html', context)
+            return render(request, "url_shortener/urls_success.html", context)
+        return render(request, "url_shortener/urls_create.html", context)
 
 
 def redirect_view(request, hash_url=None, *args, **kwargs):
@@ -39,4 +39,4 @@ def redirect_view(request, hash_url=None, *args, **kwargs):
         obj = Urls.objects.get(hash_url=hash_url)
         return HttpResponseRedirect(obj.url)
     except Http404:
-        return render(request, 'url_shortener/urls_create.html')
+        return render(request, "url_shortener/urls_create.html")
