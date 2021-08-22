@@ -1,42 +1,34 @@
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.views import View
 
 from .forms import UrlForm
-from .models import Urls
+from .service import CreateShortUrlService, MainPageService, RedirectFromShortUrlService
 
 
 class CreateUrlView(View):
     def get(self, request, *args, **kwargs):
-        form = UrlForm()
-        context = {
-            "title": "Сокращатель ссылок 3000",
-            "form": form
-        }
-        return render(request, "url_shortener/urls_create.html", context)
+        service = MainPageService()
+        context = service.get_context()
+        response = HttpResponse(context, content_type="application/json", *args, **kwargs)
+        return response
 
     def post(self, request, *args, **kwargs):
         form = UrlForm(request.POST)
-        context = {
-            "title": "Submit URL",
-            "form": form
-        }
+        print(request.method)
         if form.is_valid():
-            current_url = form.cleaned_data.get("url")
-            obj, created = Urls.objects.get_or_create(url=current_url)
-            context = {
-                "title": "Ссылка сокращена!",
-                "object": obj,
-                "created": created
-            }
-            return render(request, "url_shortener/urls_success.html", context)
-        return render(request, "url_shortener/urls_create.html", context)
+            url = form.cleaned_data.get("url")
+            service = CreateShortUrlService(url)
+            context = service.get_url_and_short_url()
+            response = HttpResponse(context, content_type="application/json")
+            return response
+        return HttpResponseRedirect("/")
 
 
 def redirect_view(request, hash_url=None, *args, **kwargs):
     try:
-        obj = Urls.objects.get(hash_url=hash_url)
-        return HttpResponseRedirect(obj.url)
+        service = RedirectFromShortUrlService(hash_url)
+        print(service.get_original_url())
+        return HttpResponseRedirect(service.get_original_url())
     except Http404:
-        return render(request, "url_shortener/urls_create.html")
+        return HttpResponseRedirect("/")
